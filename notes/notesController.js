@@ -7,14 +7,13 @@ const notesControllers = {
   getNotes(req, res, next) {
     let userId = req.params.id;
     console.log('getNotes in controller id = ', userId);
-    console.log('getNotes in controller id = ', userId);
 
     db('notes')
       // .offset(0).limit(limitNum)
       // .offset(3)
       // .limit(3).offset(8)
       .where({ user_id: userId })
-      .then(notes => {
+      .then((notes) => {
         if (!notes.length) {
           console.log('notes.length = ', notes.length);
           next;
@@ -29,9 +28,7 @@ const notesControllers = {
     try {
       const noteID = req.params.id;
 
-      const selectedNote = await db('notes')
-        .where('notes.id', noteID)
-        .limit(3);
+      const selectedNote = await db('notes').where('notes.id', noteID).limit(3);
 
       selectedNote.length
         ? res.status(200).json(selectedNote[0])
@@ -53,7 +50,7 @@ const notesControllers = {
 
     db('notes')
       .insert(newNote)
-      .then(id => {
+      .then((id) => {
         if (!id) {
           next();
         }
@@ -88,9 +85,7 @@ const notesControllers = {
     try {
       const { id } = req.params;
 
-      const deleted = await db('notes')
-        .where('notes.id', id)
-        .delete();
+      const deleted = await db('notes').where('notes.id', id).delete();
 
       deleted
         ? res.status(200).json(deleted)
@@ -133,6 +128,6 @@ const notesControllers = {
     } catch (err) {
       next(new Error('Could not search Notes'));
     }
-  }
+  },
 };
 module.exports = notesControllers;
