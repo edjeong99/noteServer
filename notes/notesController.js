@@ -25,8 +25,10 @@ const notesControllers = {
       const result = await collection.find({}).toArray();
 
       console.log(result);
+      res.send(result);
     } catch (e) {
       console.error(e);
+      next(new Error('Could not get Notes'));
     } finally {
       await client.close();
     }
@@ -59,21 +61,24 @@ const notesControllers = {
   },
 
   async getANote(req, res, next) {
+    console.log('get A Note');
     try {
-      const noteID = req.params.id;
+      var noteID = req.params.id;
+      console.log('get A Note id = ', noteID);
+      await client.connect();
 
-      const selectedNote = await db('notes').where('notes.id', noteID).limit(3);
-
-      selectedNote.length
-        ? res.status(200).json(selectedNote[0])
+      const selectedNote = await client
+        .db('Notes')
+        .collection('notes')
+        .findOne({ id: noteID });
+      console.log('get A Note selectedNote ', selectedNote);
+      selectedNote
+        ? res.status(200).json(selectedNote)
         : res
             .status(404)
             .json({ errorMessage: 'A note with that ID could not be found.' });
     } catch (err) {
       next(new Error('Could not get Notes'));
-      // res
-      //   .status(500)
-      //   .json({ error: "The note information could not be retrieved.", err });
     }
   },
 
