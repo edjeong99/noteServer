@@ -3,25 +3,59 @@ const db = require('../data/config.js');
 // for using in pagination...
 const limitNum = 3;
 
-const notesControllers = {
-  getNotes(req, res, next) {
-    let userId = req.params.id;
-    console.log('getNotes in controller id = ', userId);
+const MongoClient = require('mongodb').MongoClient;
+const uri =
+  'mongodb+srv://edjeong99:klousman3@cluster0-uamnw.mongodb.net/Notes?retryWrites=true&w=majority';
+const client = new MongoClient(uri, { useNewUrlParser: true });
 
-    db('notes')
-      // .offset(0).limit(limitNum)
-      // .offset(3)
-      // .limit(3).offset(8)
-      .where({ user_id: userId })
-      .then((notes) => {
-        if (!notes.length) {
-          console.log('notes.length = ', notes.length);
-          next;
-        }
-        console.log('getNotes in controller SUCCESS');
-        res.status(200).json(notes);
-      })
-      .catch(() => next(new Error('Could not get Notes')));
+// client.connect((err) => {
+//   const collection = client.db('Notes').collection('notes');
+//   // perform actions on the collection object
+//   client.close();
+// });
+
+const notesControllers = {
+  async getNotes(req, res, next) {
+    console.log('getNotes');
+    try {
+      await client.connect();
+
+      const collection = client.db('Notes').collection('notes');
+      // perform actions on the collection object
+      const result = await collection.find({}).toArray();
+
+      console.log(result);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await client.close();
+    }
+    // client.connect((err) => {
+    //   const collection = client.db('Notes').collection('notes');
+    //   // perform actions on the collection object
+    //   collection.find({}, function (err, cursor) {
+    //     if (err) console.log('Error');
+    //     const result = cursor.toArray();
+    //     console.log(result);
+    //   });
+    // });
+
+    // let userId = req.params.id;
+    // console.log('getNotes in controller id = ', userId);
+    // db('notes')
+    //   // .offset(0).limit(limitNum)
+    //   // .offset(3)
+    //   // .limit(3).offset(8)
+    //   .where({ user_id: userId })
+    //   .then((notes) => {
+    //     if (!notes.length) {
+    //       console.log('notes.length = ', notes.length);
+    //       next;
+    //     }
+    //     console.log('getNotes in controller SUCCESS');
+    //     res.status(200).json(notes);
+    //   })
+    //   .catch(() => next(new Error('Could not get Notes')));
   },
 
   async getANote(req, res, next) {

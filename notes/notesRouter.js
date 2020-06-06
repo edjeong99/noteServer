@@ -4,7 +4,7 @@ const nc = require('./notesController.js');
 // ENDPOINT for each features
 
 // return all notes
-router.get('/allnotes/:id', nc.getNotes);
+router.get('/allnotes', nc.getNotes);
 
 // return a note with matching id
 router.get('/notes/:id', nc.getANote);
