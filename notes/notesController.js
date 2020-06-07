@@ -15,6 +15,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true });
 // });
 
 const notesControllers = {
+  // getNotes return all notes in the DB
+
   async getNotes(req, res, next) {
     console.log('getNotes');
     try {
@@ -23,48 +25,24 @@ const notesControllers = {
       const collection = client.db('Notes').collection('notes');
       // perform actions on the collection object
       const result = await collection.find({}).toArray();
+      console.log('getNotes in controller SUCCESS');
 
-      console.log(result);
-      res.send(result);
+      res.status(200).send(result);
     } catch (e) {
       console.error(e);
       next(new Error('Could not get Notes'));
     } finally {
       await client.close();
     }
-    // client.connect((err) => {
-    //   const collection = client.db('Notes').collection('notes');
-    //   // perform actions on the collection object
-    //   collection.find({}, function (err, cursor) {
-    //     if (err) console.log('Error');
-    //     const result = cursor.toArray();
-    //     console.log(result);
-    //   });
-    // });
-
-    // let userId = req.params.id;
-    // console.log('getNotes in controller id = ', userId);
-    // db('notes')
-    //   // .offset(0).limit(limitNum)
-    //   // .offset(3)
-    //   // .limit(3).offset(8)
-    //   .where({ user_id: userId })
-    //   .then((notes) => {
-    //     if (!notes.length) {
-    //       console.log('notes.length = ', notes.length);
-    //       next;
-    //     }
-    //     console.log('getNotes in controller SUCCESS');
-    //     res.status(200).json(notes);
-    //   })
-    //   .catch(() => next(new Error('Could not get Notes')));
   },
 
+  // getANote return a note that matches the id in req.params.id
   async getANote(req, res, next) {
     console.log('get A Note');
     try {
       var noteID = req.params.id;
-      console.log('get A Note id = ', noteID);
+      noteID = parseInt(noteID); // change type of noteID from string to int
+      // console.log('get A Note id = ', noteID);
       await client.connect();
 
       const selectedNote = await client
@@ -79,6 +57,8 @@ const notesControllers = {
             .json({ errorMessage: 'A note with that ID could not be found.' });
     } catch (err) {
       next(new Error('Could not get Notes'));
+    } finally {
+      await client.close();
     }
   },
 
