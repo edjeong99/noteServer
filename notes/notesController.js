@@ -8,6 +8,14 @@ const uri =
   'mongodb+srv://edjeong99:klousman3@cluster0-uamnw.mongodb.net/Notes?retryWrites=true&w=majority';
 const client = new MongoClient(uri, { useNewUrlParser: true });
 
+let collection;
+
+const init = function () {
+  console.log('init in Controller.js');
+  MongoClient.connect(uri, { useNewUrlParser: true }).then((client) => {
+    collection = client.db('Notes').collection('notes');
+  });
+};
 // client.connect((err) => {
 //   const collection = client.db('Notes').collection('notes');
 //   // perform actions on the collection object
@@ -20,9 +28,9 @@ const notesControllers = {
   async getNotes(req, res, next) {
     console.log('begin getNotes');
     try {
-      await client.connect();
+      //  await client.connect();
 
-      const collection = client.db('Notes').collection('notes');
+      // const collection = client.db('Notes').collection('notes');
       // perform actions on the collection object
       const result = await collection.find({}).toArray();
       console.log('getNotes in controller SUCCESS');
@@ -33,7 +41,7 @@ const notesControllers = {
       next(new Error('Could not get Notes'));
     } finally {
       console.log('getNotes at Finally');
-      await client.close();
+      //await client.close();
     }
   },
 
@@ -43,13 +51,10 @@ const notesControllers = {
     try {
       var noteID = req.params.id;
       noteID = parseInt(noteID); // change type of noteID from string to int
-      // console.log('get A Note id = ', noteID);
-      await client.connect();
+      console.log('get A Note id = ', noteID);
+      //    await client.connect();
 
-      const selectedNote = await client
-        .db('Notes')
-        .collection('notes')
-        .findOne({ id: noteID });
+      const selectedNote = await collection.findOne({ id: noteID });
       console.log('get A Note selectedNote ', selectedNote);
       selectedNote
         ? res.status(200).json(selectedNote)
@@ -60,7 +65,7 @@ const notesControllers = {
       next(new Error('Could not get Notes'));
     } finally {
       console.log('getANote at Finally');
-      await client.close();
+      //await client.close();
     }
   },
 
@@ -151,4 +156,4 @@ const notesControllers = {
     }
   },
 };
-module.exports = notesControllers;
+module.exports = { init, notesControllers };
