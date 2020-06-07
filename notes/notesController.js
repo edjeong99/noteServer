@@ -18,7 +18,7 @@ const notesControllers = {
   // getNotes return all notes in the DB
 
   async getNotes(req, res, next) {
-    console.log('getNotes');
+    console.log('begin getNotes');
     try {
       await client.connect();
 
@@ -32,6 +32,7 @@ const notesControllers = {
       console.error(e);
       next(new Error('Could not get Notes'));
     } finally {
+      console.log('getNotes at Finally');
       await client.close();
     }
   },
@@ -58,6 +59,7 @@ const notesControllers = {
     } catch (err) {
       next(new Error('Could not get Notes'));
     } finally {
+      console.log('getANote at Finally');
       await client.close();
     }
   },
