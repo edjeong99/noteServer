@@ -113,11 +113,13 @@ const notesControllers = {
 
   async deleteNote(req, res, next) {
     try {
-      const { id } = req.params;
+      var { id } = req.params;
+      id = parseInt(id);
 
-      const deleted = await db('notes').where('notes.id', id).delete();
+      const deleted = await collection.findOneAndDelete({ id: id });
+      console.log('deleted - ', deleted);
 
-      deleted
+      deleted.value
         ? res.status(200).json(deleted)
         : res
             .status(404)
