@@ -69,20 +69,30 @@ const notesControllers = {
     }
   },
 
-  createNote(req, res, next) {
+  async createNote(req, res, next) {
     const newNote = req.body;
 
     console.log('Create Note  req.body = ', req.body);
+    try {
+      const result = await collection.insertOne(newNote);
+      console.log('createNotes in controller SUCCESS  result = ', result);
 
-    db('notes')
-      .insert(newNote)
-      .then((id) => {
-        if (!id) {
-          next();
-        }
-        res.status(200).json(id);
-      })
-      .catch(() => next(new Error('Could not create a new Notes')));
+      res.status(200).send(result);
+    } catch (e) {
+      console.error(e);
+      next(new Error('Could not add a Notes'));
+    } finally {
+      console.log('createNotes at Finally');
+    }
+    // db('notes')
+    //   .insert(newNote)
+    //   .then((id) => {
+    //     if (!id) {
+    //       next();
+    //     }
+    //     res.status(200).json(id);
+    //   })
+    //   .catch(() => next(new Error('Could not create a new Notes')));
   },
 
   async editNote(req, res, next) {
