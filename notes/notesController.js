@@ -12,12 +12,14 @@ let collection;
 
 const init = function () {
   console.log('init in Controller.js');
-  MongoClient.connect(uri, { useNewUrlParser: true }).then((client) => {
-    collection = client.db('Notes').collection('notes');
-  });
-  // .then(() => {
-  //   collection.createIndex({ title: 'text', textBody: 'text' });
-  // });
+  MongoClient.connect(uri, { useNewUrlParser: true })
+    .then((client) => {
+      collection = client.db('Notes').collection('notes');
+    })
+    .then(() => {
+      //createIndex is needed for search functionality.
+      collection.createIndex({ title: 'text', textBody: 'text' });
+    });
 };
 // client.connect((err) => {
 //   const collection = client.db('Notes').collection('notes');
@@ -55,7 +57,6 @@ const notesControllers = {
       var noteID = req.params.id;
       noteID = parseInt(noteID); // change type of noteID from string to int
       console.log('get A Note id = ', noteID);
-      //    await client.connect();
 
       const selectedNote = await collection.findOne({ id: noteID });
       console.log('get A Note selectedNote ', selectedNote);
@@ -134,19 +135,20 @@ const notesControllers = {
 
   async searchNote(req, res, next) {
     try {
-      const result = await collection.find({ id: 1 });
-      console.log('getNotes in controller SUCCESS', result);
+      var query = req.query.query;
+      console.log('query = ', query);
 
-      res.status(200).send(result);
-      // const query = req.query.query;
-      // console.log('query =', query);
+      // $text look query in fields that createIndex in init()
+      // created index - in our app, title and textBody field is indexed
+      const queryNotes = await collection
+        .find({ $text: { $search: query, $caseSensitive: false } })
+        .toArray();
 
-      // const queryNotes = await collection.find({ id: 2 });
-      // console.log('queryNotes =', queryNotes.s);
+      console.log('queryNotes =', queryNotes);
 
-      // queryNotes
-      //   ? res.status(200).json(queryNotes)
-      //   : res.status(404).json({ errorMessage: 'No matching note founded' });
+      queryNotes.length
+        ? res.status(200).json(queryNotes)
+        : res.status(404).json({ errorMessage: 'No matching note founded' });
     } catch (err) {
       next(new Error('Could not search Notes'));
     }
