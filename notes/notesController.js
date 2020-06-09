@@ -84,30 +84,24 @@ const notesControllers = {
     } finally {
       console.log('createNotes at Finally');
     }
-    // db('notes')
-    //   .insert(newNote)
-    //   .then((id) => {
-    //     if (!id) {
-    //       next();
-    //     }
-    //     res.status(200).json(id);
-    //   })
-    //   .catch(() => next(new Error('Could not create a new Notes')));
   },
 
   async editNote(req, res, next) {
     try {
-      const { id } = req.params;
+      var { id } = req.params;
+      id = parseInt(id);
       const editedNote = req.body;
-      console.log('editedNote', editedNote);
-      //    id = Number(id);
-      // console.log( "why not this?", typeof id);
+      console.log('editedNote', editedNote, 'id = ', id);
 
-      const editedID = await db('notes')
-        .where('notes.id', id)
-        .update(editedNote);
-      console.log('editedID', editedID);
-      editedID
+      const editedID = await collection.findOneAndUpdate(
+        { id: id },
+        {
+          $set: editedNote,
+        },
+        { returnNewDocument: true }
+      );
+      console.log('editedID = ', editedID);
+      editedID.value
         ? res.status(200).json(editedID)
         : res
             .status(404)
