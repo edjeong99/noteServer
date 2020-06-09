@@ -15,6 +15,9 @@ const init = function () {
   MongoClient.connect(uri, { useNewUrlParser: true }).then((client) => {
     collection = client.db('Notes').collection('notes');
   });
+  // .then(() => {
+  //   collection.createIndex({ title: 'text', textBody: 'text' });
+  // });
 };
 // client.connect((err) => {
 //   const collection = client.db('Notes').collection('notes');
@@ -130,33 +133,20 @@ const notesControllers = {
   },
 
   async searchNote(req, res, next) {
-    //   const query = req.query.query;
-
-    //   db('notes').where("notes.title", 'like', `%${query}%`)
-    //     .orWhere("notes.textBody",'like', `%${query}%`)
-    //   .then(notes => {
-    //     if (!notes.length) {
-    //       console.log("notes.length = ", notes.length);
-    //       next();
-    //     }
-    //     res.status(200).json(notes);
-    //   })
-    //   .catch(() => next(new Error("Could not get Notes")));
-    // },
-
     try {
-      const query = req.query.query;
+      const result = await collection.find({ id: 1 });
+      console.log('getNotes in controller SUCCESS', result);
 
-      const queryNotes = await db('notes')
-        .where('notes.title', 'like', `%${query}%`)
-        .orWhere('notes.textBody', 'like', `%${query}%`);
-      console.log('in searchNote func  queryNotes = ', queryNotes);
+      res.status(200).send(result);
+      // const query = req.query.query;
+      // console.log('query =', query);
 
-      // queryNotes ?
-      res.status(200).json(queryNotes);
-      // : res
-      //     .status(404)
-      //     .json({ errorMessage: "No matching note founded" });
+      // const queryNotes = await collection.find({ id: 2 });
+      // console.log('queryNotes =', queryNotes.s);
+
+      // queryNotes
+      //   ? res.status(200).json(queryNotes)
+      //   : res.status(404).json({ errorMessage: 'No matching note founded' });
     } catch (err) {
       next(new Error('Could not search Notes'));
     }
