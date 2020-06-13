@@ -3,7 +3,7 @@ It is a personal project to improve my back-end development skills.  There is a 
 
 Front-end and Back-end each took 4 days to develop as part of Lambda School's curriculum. I then deployed both Front-end and Back-end.
 
-Based on the school project, I am making several changes to improve.  Some of the main changes are
+Based on the school project, I am making several changes to improve.  Two main changes are
 - using MongoDB
 - deploying at AWS
 
@@ -12,12 +12,9 @@ Based on the school project, I am making several changes to improve.  Some of th
 
 ### to test site
 
-You can visit https://ed-notes.netlify.com to see the site. You can create an account or use this credential username : q, password : 1.
+APIs are at http://noteserver-env.eba-y3ssbpsr.us-east-1.elasticbeanstalk.com/api/allnotes 
 
-### Deployment
 
-Front End : https://ed-notes.netlify.com
-Back End : 
 
 ### Installation
 
@@ -41,19 +38,19 @@ To install the application in a local dev environment, run `yarn install` in the
 
 ### Back-end API
 
-##### GET https://https://ed-notes.herokuapp.com/allnotes/:id
+##### GET /api/allnotes
 
 Returns an array of all the notes of logged users.
 
-##### GET https://ed-notes.herokuapp.com/api//notes/:id
+##### GET /api//notes/:id
 
 Returns an note of the id.
 
-##### POST https://https://ed-notes.herokuapp.com/api//addnote
+##### POST /api//addnote
 
 Add a new note to DB
 
-##### PUT https://https://ed-notes.herokuapp.com/notes/:id
+##### PUT /api/notes/:id
 
 Edit an existing note of the id. The content of edited note is send as req.body in a format of
 {
@@ -61,11 +58,11 @@ title : "title",
 textBody : "notes"
 }
 
-##### DELETE https://https://ed-notes.herokuapp.com/api/notes/:id
+##### DELETE /api/notes/:id
 
 Delete a note of the id
 
-##### GET https://https://ed-notes.herokuapp.com/api/search
+##### GET /api/search?query='query'
 
 Returns those notes that matches query
 
