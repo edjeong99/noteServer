@@ -16,10 +16,6 @@ const init = function () {
     .then((client) => {
       collection = client.db('Notes').collection('notes');
     })
-    .then(() => {
-      //createIndex is needed for search functionality.
-      collection.createIndex({ title: 'text', textBody: 'text' });
-    });
 };
 // client.connect((err) => {
 //   const collection = client.db('Notes').collection('notes');
