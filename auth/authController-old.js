@@ -11,7 +11,7 @@ function login(req, res, next) {
   db('users')
     .where({ username: cred.username })
     .first()
-    .then(user => {
+    .then((user) => {
       if (user && bcrypt.compareSync(cred.password, user.password)) {
         const token = generateToken(user);
         console.log('Login AuthCOntroll Success');

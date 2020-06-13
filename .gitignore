@@ -5,3 +5,7 @@ _secrets
 \_secrets
 keys.js
 _secrets\keys.js
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

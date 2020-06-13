@@ -12,7 +12,7 @@ const { authenticate } = require('./auth/middlewares');
 //* Middleware & Routes
 require('./middleware')(server);
 
-server.use('/auth', authRouter);
+//server.use('/auth', authRouter);
 server.use('/api', notesRouter);
 // server.use('/api', authenticate, notesRouter);
 

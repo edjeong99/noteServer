@@ -1,4 +1,4 @@
-const db = require('../data/config.js');
+//const db = require('../data/config.js');
 
 // for using in pagination...
 const limitNum = 3;
