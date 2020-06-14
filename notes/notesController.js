@@ -1,48 +1,33 @@
-//const db = require('../data/config.js');
+require('dotenv').config();
 
-// for using in pagination...
-const limitNum = 3;
-
+const dbUri = process.env.DBURI;
+console.log('dbUri = ', dbUri);
 const MongoClient = require('mongodb').MongoClient;
-const uri =
-  'mongodb+srv://edjeong99:klousman3@cluster0-uamnw.mongodb.net/Notes?retryWrites=true&w=majority';
-const client = new MongoClient(uri, { useNewUrlParser: true });
+
+const client = new MongoClient(dbUri, { useNewUrlParser: true });
 
 let collection;
 
 const init = function () {
   console.log('init in Controller.js');
-  MongoClient.connect(uri, { useNewUrlParser: true })
-    .then((client) => {
-      collection = client.db('Notes').collection('notes');
-    })
+  MongoClient.connect(dbUri, { useNewUrlParser: true }).then((client) => {
+    collection = client.db('Notes').collection('notes');
+  });
 };
-// client.connect((err) => {
-//   const collection = client.db('Notes').collection('notes');
-//   // perform actions on the collection object
-//   client.close();
-// });
 
 const notesControllers = {
   // getNotes return all notes in the DB
-
   async getNotes(req, res, next) {
     console.log('begin getNotes');
     try {
-      //  await client.connect();
-
-      // const collection = client.db('Notes').collection('notes');
-      // perform actions on the collection object
       const result = await collection.find({}).toArray();
       console.log('getNotes in controller SUCCESS');
-
       res.status(200).send(result);
     } catch (e) {
       console.error(e);
       next(new Error('Could not get Notes'));
     } finally {
       console.log('getNotes at Finally');
-      //await client.close();
     }
   },
 
@@ -65,7 +50,6 @@ const notesControllers = {
       next(new Error('Could not get Notes'));
     } finally {
       console.log('getANote at Finally');
-      //await client.close();
     }
   },
 
@@ -76,7 +60,6 @@ const notesControllers = {
     try {
       const result = await collection.insertOne(newNote);
       console.log('createNotes in controller SUCCESS  result = ', result);
-
       res.status(200).send(result);
     } catch (e) {
       console.error(e);
@@ -92,12 +75,9 @@ const notesControllers = {
       id = parseInt(id);
       const editedNote = req.body;
       console.log('editedNote', editedNote, 'id = ', id);
-
       const editedID = await collection.findOneAndUpdate(
         { id: id },
-        {
-          $set: editedNote,
-        },
+        { $set: editedNote },
         { returnNewDocument: true }
       );
       console.log('editedID = ', editedID);
