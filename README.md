@@ -38,11 +38,17 @@ To install the application in a local dev environment, run `yarn install` in the
 ##### GET /api/allnotes
 Returns an array of all the notes of logged users.
 
-##### GET /api//notes/:id
+##### GET /api/notes/:id
 Returns an note of the id.
 
-##### POST /api//addnote
+##### POST /api/addnote
 Add a new note to DB
+The content of new note is send as req.body in a format of
+{
+title : "title",
+textBody : "notes"
+}
+
 
 ##### PUT /api/notes/:id
 Edit an existing note of the id. The content of edited note is send as req.body in a format of
